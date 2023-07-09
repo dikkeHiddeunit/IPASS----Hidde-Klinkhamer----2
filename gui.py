@@ -1,6 +1,6 @@
 import tkinter as tk
 from ai import small_board_check, minimax
-from game_state import board, board_status
+from game_state import board, board_status, frame_winner
 import tkinter.messagebox as messagebox
 
 current_player = "X"  # Startspeler
@@ -9,30 +9,44 @@ current_board = 0
 
 
 def check_game_winner():
-    winning_combinations = [
-        # Horizontale combinaties
-        [0, 1, 2], [3, 4, 5], [6, 7, 8],
-        # Verticale combinaties
-        [0, 3, 6], [1, 4, 7], [2, 5, 8],
-        # Diagonale combinaties
-        [0, 4, 8], [2, 4, 6]
-    ]
+    game_winner = False
+    winner = 0
+    if frame_winner[0] == frame_winner[1] == frame_winner[2] and frame_winner[0] != 0:
+        winner = frame_winner[0]
+        game_winner = True
+    elif frame_winner[3] == frame_winner[4] == frame_winner[5] and frame_winner[3] != 0:
+        winner = frame_winner[3]
+        game_winner = True
+    elif frame_winner[6] == frame_winner[7] == frame_winner[8] and frame_winner[6] != 0:
+        winner = frame_winner[6]
+        game_winner = True
+    elif frame_winner[0] == frame_winner[3] == frame_winner[6] and frame_winner[0] != 0:
+        winner = frame_winner[0]
+        game_winner = True
+    elif frame_winner[1] == frame_winner[4] == frame_winner[7] and frame_winner[1] != 0:
+        winner = frame_winner[1]
+        game_winner = True
+    elif frame_winner[2] == frame_winner[5] == frame_winner[8] and frame_winner[2] != 0:
+        winner = frame_winner[2]
+        game_winner = True
+    elif frame_winner[0] == frame_winner[4] == frame_winner[8] and frame_winner[0] != 0:
+        winner = frame_winner[0]
+        game_winner = True
+    elif frame_winner[2] == frame_winner[4] == frame_winner[6] and frame_winner[2] != 0:
+        winner = frame_winner[2]
+        game_winner = True
 
-    for combination in winning_combinations:
-        indices = combination
-        marks = [board_status[i] for i in indices]
-        if all(mark == marks[0] and mark != 0 for mark in marks):
-            winner = marks[0]
-            if winner == 1:
-                messagebox.showinfo("Game Over", "Speler X wint het spel!")
-            else:
-                messagebox.showinfo("Game Over", "Speler O wint het spel!")
-            game_board.after(5000, game_board.destroy)  # Sluit de GUI na 5 seconden
-            return
-
-    if all(status != 0 for status in board_status):
-        messagebox.showinfo("Game Over", "Gelijkspel!")
+    if game_winner == True and winner == 1:
+        messagebox.showinfo("Game Over", "Speler X wint het spel!")
         game_board.after(5000, game_board.destroy)  # Sluit de GUI na 5 seconden
+    elif game_winner == True and winner == -1:
+        messagebox.showinfo("Game Over", "Speler O wint het spel!")
+        game_board.after(5000, game_board.destroy)  # Sluit de GUI na 5 seconden
+    else:
+        if all(status != 0 for status in board_status):
+            messagebox.showinfo("Game Over", "Gelijkspel!")
+            game_board.after(5000, game_board.destroy)  # Sluit de GUI na 5 seconden
+    return
 
 
 def change_button_text(frame_index, button_index):
@@ -93,12 +107,12 @@ def perform_computer_move():
 
 def computer_move():
     if board_status[current_board] == -1:
-        _, best_play = minimax(board, current_board, 5, float("-inf"), float("inf"), True)
+        _, best_play = minimax(board, current_board, 6, float("-inf"), float("inf"), True)
         if best_play is not None:
             frame_index, button_index = best_play
             return frame_index, button_index
     else:
-        _, best_play = minimax(board, current_board, 5, float("-inf"), float("inf"), True)
+        _, best_play = minimax(board, current_board, 6, float("-inf"), float("inf"), True)
         if best_play is not None:
             button_index = best_play[1]
             return current_board, button_index

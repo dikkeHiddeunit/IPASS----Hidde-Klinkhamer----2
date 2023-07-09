@@ -1,4 +1,4 @@
-from game_state import board, board_status
+from game_state import board, board_status, frame_winner
 
 
 ai = 1
@@ -54,9 +54,12 @@ def small_board_check(buttons, small_board_index):
     small_board = board[small_board_index]
     win = small_board_check_winner(small_board)
     if win == 1:
+        frame_winner[small_board_index] = -1
         winner = "O"
     if win == -1:
+        frame_winner[small_board_index] = 1
         winner = "X"
+    print(frame_winner)
     full = small_board_is_full(small_board_index)
     if win != 0:
         change_frame_button_color(buttons, small_board_index, winner)
