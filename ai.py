@@ -28,6 +28,7 @@ def small_board_check_winner(small_board):
 
     return 0
 
+
 def small_board_is_full(small_board_index):
     small_board = board[small_board_index]
     for x in small_board:
@@ -36,14 +37,33 @@ def small_board_is_full(small_board_index):
     board_status[small_board_index] = -1
     return True
 
-def small_board_check(small_board_index):
+def change_frame_button_color(buttons, frame_index, winner):
+    buttons_in_frame = buttons[frame_index]
+
+    if winner == "X":
+        for button in buttons_in_frame:
+            button.config(bg="tomato")
+    elif winner == "draw":
+        for button in buttons_in_frame:
+            button.config(bg="yellow")
+    elif winner == "O":
+        for button in buttons_in_frame:
+            button.config(bg="cornflowerblue")
+
+def small_board_check(buttons, small_board_index):
     small_board = board[small_board_index]
     win = small_board_check_winner(small_board)
+    if win == 1:
+        winner = "O"
+    if win == -1:
+        winner = "X"
     full = small_board_is_full(small_board_index)
     if win != 0:
+        change_frame_button_color(buttons, small_board_index, winner)
         board_status[small_board_index] = -1
         return win
     elif full is True:
+        change_frame_button_color(buttons, small_board_index, "draw")
         board_status[small_board_index] = -1
         return full
     else:
@@ -148,72 +168,52 @@ def total_board_evaluate(small_board_index):
 
 
 
+def get_available_moves(board, small_board_index):
+    available_moves = []
+    if board_status[small_board_index] == 0:
+        for x in range(9):
+            if board[small_board_index][x] == 0:
+                available_moves.append((small_board_index, x))
+    else:
+        for x in range(9):
+            if board_status[x] == 0:
+                for y in range(9):
+                    if board[x][y] == 0:
+                        available_moves.append((x, y))
+    return available_moves
+
 
 def minimax(board, small_board_index, depth, alpha, beta, maximizing):
-
     if total_board_evaluate(small_board_index) > 100000 or depth <= 0:
         return total_board_evaluate(small_board_index), None
+
+    available_moves = get_available_moves(board, small_board_index)
 
     if maximizing:
         best_score = float('-inf')
         best_play = None
-        if board_status[small_board_index] == 0:
-            for x in range(9):
-                if board[small_board_index][x] == 0:
-                    board[small_board_index][x] = ai
-                    score, _ = minimax(board, x, depth - 1, alpha, beta, False)
-                    board[small_board_index][x] = 0
-                    if score > best_score:
-                        best_score = score
-                        best_play = [small_board_index, x]
-                        alpha = max(alpha, best_score)
-                        if beta <= alpha:
-                            break
-        else:
-            for x in range(9):
-                if board_status[x] == 0:
-                    for y in range(9):
-                        if board[x][y] == 0:
-                            board[x][y] = ai
-                            score, _ = minimax(board, x, depth - 1, alpha, beta, False)
-                            board[x][y] = 0
-                            if score > best_score:
-                                best_score = score
-                                best_play = [x, y]
-                                alpha = max(alpha, best_score)
-                                if beta <= alpha:
-                                    break
+        for move in available_moves:
+            board[move[0]][move[1]] = ai
+            score, _ = minimax(board, move[1], depth - 1, alpha, beta, False)
+            board[move[0]][move[1]] = 0
+            if score > best_score:
+                best_score = score
+                best_play = move
+                alpha = max(alpha, best_score)
+                if beta <= alpha:
+                    break
         return best_score, best_play
     else:
         best_score = float('inf')
         best_play = None
-        if board_status[small_board_index] == 0:
-            for x in range(9):
-                if board[small_board_index][x] == 0:
-                    board[small_board_index][x] = player
-                    score, _ = minimax(board, x, depth - 1, alpha, beta, True)
-                    board[small_board_index][x] = 0
-                    if score < best_score:
-                        best_score = score
-                        best_play = [small_board_index, x]
-                        beta = min(beta, best_score)
-                        if beta <= alpha:
-                            break
-        else:
-            for x in range(9):
-                if board_status[x] == 0:
-                    for y in range(9):
-                        if board[x][y] == 0:
-                            board[x][y] = player
-                            score, _ = minimax(board, y, depth - 1, alpha, beta, True)
-                            board[x][y] = 0
-                            if score < best_score:
-                                best_score = score
-                                best_play = [x, y]
-                                beta = min(beta, best_score)
-                                if beta <= alpha:
-                                    break
+        for move in available_moves:
+            board[move[0]][move[1]] = player
+            score, _ = minimax(board, move[1], depth - 1, alpha, beta, True)
+            board[move[0]][move[1]] = 0
+            if score < best_score:
+                best_score = score
+                best_play = move
+                beta = min(beta, best_score)
+                if beta <= alpha:
+                    break
         return best_score, best_play
-
-
-print(minimax(board, 0, 3, float("inf"), float("-inf"), True)[1])

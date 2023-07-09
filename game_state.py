@@ -1,5 +1,5 @@
 
-
+# just a file so i can use board_status en board in both the gui and the ai file
 board_status = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 board = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
