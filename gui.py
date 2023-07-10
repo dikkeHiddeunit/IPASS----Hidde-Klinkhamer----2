@@ -80,7 +80,7 @@ def change_button_text(frame_index, button_index):
         if x in active_frames:
             frame = frames[x]
             small_board_enable_buttons(x)
-            frame.configure(bg="light green")
+            frame.configure(bg="green")
         else:
             frame = frames[x]
             small_board_disable_buttons(x)
