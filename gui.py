@@ -11,13 +11,13 @@ difficulty = input("Choose a difficulty level: easy/hard --> ")
 if difficulty == "easy":
     difficulty = 1
 elif difficulty == "hard":
-    difficulty = 5
+    difficulty = 6
 else:
     print("ERROR")
     exit()
 
 def check_game_winner():
-    # Checks if there is a winner in the game
+    """Checks if there is a winner in the game."""
     game_winner = False
     winner = 0
 
@@ -52,19 +52,21 @@ def check_game_winner():
         game_winner = True
 
     if game_winner == True and winner == 1:
-        messagebox.showinfo("Game Over", "Player X wins the game! The window will close automatically.")
-        game_board.after(5000, game_board.destroy)  # Close the GUI after 5 seconds
+        messagebox.showinfo("Game Over", "Player X wins the game!")
     elif game_winner == True and winner == -1:
-        messagebox.showinfo("Game Over", "Player O wins the game! The window will close automatically.")
-        game_board.after(5000, game_board.destroy)  # Close the GUI after 5 seconds
+        messagebox.showinfo("Game Over", "Player O wins the game!")
+
     else:
         if all(status != 0 for status in board_status):
-            messagebox.showinfo("Game Over", "It's a draw! The window will close automatically.")
-            game_board.after(5000, game_board.destroy)  # Close the GUI after 5 seconds
+            messagebox.showinfo("Game Over", "It's a draw!")
     return
 
 def change_button_text(frame_index, button_index):
-    # Changes the text and updates the button state when a button is clicked
+    """Changes the text and updates the button state when a button is clicked.
+    Args:
+        frame_index (int): The index of the frame.
+        button_index (int): The index of the button.
+    """
     global current_player, active_frames, current_board
     if buttons[frame_index][button_index]["text"] == "" and board_status[frame_index] != -1:
         buttons[frame_index][button_index].configure(text=current_player)
@@ -112,7 +114,7 @@ def change_button_text(frame_index, button_index):
     active_frames.clear()
 
 def perform_computer_move():
-    # Performs the computer's move
+    """Performs the computer's move."""
     global current_player, current_board
 
     if current_player == "O":
@@ -123,7 +125,10 @@ def perform_computer_move():
             current_board = button_index  # Update the current board location to the chosen button
 
 def computer_move():
-    # Determines the computer's move
+    """Determines the computer's move.
+    Returns:
+        tuple: The frame index and button index for the computer's move.
+    """
     if board_status[current_board] == -1:
         _, best_play = minimax(board, current_board, difficulty, float("-inf"), float("inf"), True)
         if best_play is not None:
@@ -137,13 +142,19 @@ def computer_move():
     return None, None
 
 def small_board_disable_buttons(frame_index):
-    # Disables the buttons in a small board frame
+    """Disables the buttons in a small board frame.
+    Args:
+        frame_index (int): The index of the frame.
+    """
     buttons_in_frame = buttons[frame_index]
     for x in buttons_in_frame:
         x.config(state="disabled")
 
 def small_board_enable_buttons(frame_index):
-    # Enables the buttons in a small board frame
+    """Enables the buttons in a small board frame.
+    Args:
+        frame_index (int): The index of the frame.
+    """
     buttons_in_frame = buttons[frame_index]
     for x in buttons_in_frame:
         x.config(state="normal")
