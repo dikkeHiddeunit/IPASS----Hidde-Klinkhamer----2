@@ -227,17 +227,3 @@ def minimax(board, small_board_index, depth, alpha, beta, maximizing):
             if beta <= alpha:
                 break
         return best_score, best_play
-
-
-board = [
-    [1, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, -1, 0, 0, -1, 0, 0, 0, -1],
-    [1, 1, 1, -1, 0, 0, 0, 0, -1],
-    [-1, -1, -1, 0, 1, 0, 0, 0, 1],
-    [0, 0, 0, 1, -1, 1, 1, 1, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1]
-]
-print(small_board_evaluate([board[2]]))
